@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel de Controle Bitcoin (BTC)</title>
+    <title>Painel Automático Bitcoin (BTC)</title>
     
     <!-- Incluindo Chart.js para os gráficos -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -125,47 +125,12 @@
             transition: width 0.5s ease-in-out;
         }
 
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-        }
-
-        .form-group input, .form-group select {
-            width: 100%;
+        .wallet-info {
+            background: rgba(15, 52, 96, 0.3);
             padding: 10px;
-            background-color: var(--bg-color);
-            border: 1px solid var(--border-color);
             border-radius: 5px;
-            color: var(--font-color);
-        }
-
-        button {
-            width: 100%;
-            padding: 12px;
-            background-color: var(--primary-color);
-            border: none;
-            border-radius: 5px;
-            color: white;
-            font-size: 1.1em;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        button:hover {
-            background-color: #d97e15;
-        }
-
-        .danger-button {
-            background-color: var(--red-color);
-            margin-top: 15px;
-        }
-        .danger-button:hover {
-            background-color: #c93a47;
+            margin-bottom: 15px;
+            word-break: break-all;
         }
 
         #transaction-table {
@@ -214,18 +179,6 @@
             width: 100%;
         }
 
-        .chart-values {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            margin-top: 10px;
-            font-size: 0.9em;
-        }
-
-        .chart-value {
-            font-weight: bold;
-        }
-
         .chart-dates {
             display: flex;
             justify-content: space-between;
@@ -245,30 +198,19 @@
             color: var(--font-color);
         }
 
-        /* Layout de duas colunas para o formulário e histórico */
-        .two-columns {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
-        .auto-value-info {
-            color: var(--primary-color);
-            font-size: 0.9em;
-            padding: 8px;
+        .meta-info {
+            margin-top: 15px;
+            padding: 10px;
             background: rgba(15, 52, 96, 0.3);
             border-radius: 5px;
-            margin-bottom: 15px;
-            display: none;
         }
 
         @media (max-width: 768px) {
-            .two-columns {
-                grid-template-columns: 1fr;
+            .dashboard-grid {
+                grid-template-columns: 1fr 1fr;
             }
         }
     
-    /* NOVO: Estilos para celulares menores */
     @media (max-width: 480px) {
         header p {
             display: block;
@@ -296,16 +238,6 @@
             font-size: 1.1em;
         }
 
-        .form-group input,
-        .form-group select {
-            font-size: 1em;
-        }
-
-        button {
-            font-size: 1em;
-            padding: 10px;
-        }
-
         .chart-container {
             height: 250px;
         }
@@ -314,103 +246,77 @@
             max-width: 120px;
         }
     }
-
-</style>
+    </style>
 </head>
 <body>
 
     <div class="container">
         <header>
             <img src="https://logospng.org/download/bitcoin/logo-bitcoin-4096.png" alt="Logo Bitcoin">
-            <h1>Painel de Controle de Investimentos em Bitcoin (BTC)</h1>
-            <p>Seu caminho para a meta de <input type="number" id="meta-input" value="150000" min="0" step="100">, atualizado em tempo real.</p>
+            <h1>Painel Automático de Investimentos em Bitcoin</h1>
+            <p>Monitorando automaticamente sua carteira Bitcoin</p>
             <div id="live-price" style="font-size:1.1em; margin-top:10px;">Buscando cotações...</div>
+            <div>
+                <label for="meta-input">Meta de investimento (R$):</label>
+                <input type="number" id="meta-input" value="10000" min="0" step="100">
+            </div>
         </header>
 
         <div class="card" style="grid-column: 1 / -1;">
             <h2>Dashboard Principal</h2>
+            <div class="wallet-info">
+                <strong>Endereço monitorado:</strong> bc1q3nah3kzyy2cj8xmwulf6fjas6zpqn37c6a7lmw
+                <div id="wallet-sync-status" style="margin-top:5px;"></div>
+            </div>
             <div class="dashboard-grid">
                 <div class="metric">
-                    <div class="label">Total de BTC Acumulado</div>
-                    <div class="value" id="total-btc">0.00000000</div>
+                    <div class="label">Saldo Atual (BTC)</div>
+                    <div class="value" id="current-balance">0.00000000</div>
                 </div>
                 <div class="metric">
                     <div class="label">Patrimônio Atual (R$)</div>
                     <div class="value" id="patrimonio-atual">R$ 0,00</div>
                 </div>
                 <div class="metric">
-                    <div class="label">Preço Médio de Compra (R$)</div>
+                    <div class="label">Preço Médio (R$)</div>
                     <div class="value" id="preco-medio">R$ 0,00</div>
-                </div>
-                <div class="metric">
-                    <div class="label">Falta para a Meta (R$)</div>
-                    <div class="value" id="falta-para-meta">R$ 150.000,00</div>
-                </div>
-                <div class="metric">
-                    <div class="label">BTC Necessários para Meta</div>
-                    <div class="value" id="btc-para-meta">...</div>
                 </div>
                 <div class="metric">
                     <div class="label">Total Investido (R$)</div>
                     <div class="value" id="total-investido">R$ 0,00</div>
                 </div>
                 <div class="metric">
-                    <div class="label">Lucro/Prejuízo Total</div>
-                    <div class="value" id="profit-loss">-</div>
+                    <div class="label">Lucro/Prejuízo</div>
+                    <div class="value" id="profit-loss">R$ 0,00</div>
+                </div>
+                <div class="metric">
+                    <div class="label">Falta para Meta</div>
+                    <div class="value" id="btc-para-meta">0.00000000 BTC</div>
                 </div>
             </div>
-            <h3 id="progress-title" style="text-align:center; margin-top: 25px; margin-bottom:10px;">Progresso até a Meta (R$ 150.000)</h3>
-            <div class="progress-bar-container">
-                <div id="progress-bar">0%</div>
+            <div class="meta-info">
+                <div id="progress-title">Progresso em relação à meta: R$ 10.000,00</div>
+                <div class="progress-bar-container">
+                    <div id="progress-bar">0%</div>
+                </div>
             </div>
         </div>
 
-        <div class="two-columns" style="grid-column: 1 / -1;">
-            <div class="card">
-                <h2>Adicionar Lançamento</h2>
-                <form id="transaction-form">
-                    <div class="form-group">
-                        <label for="date">Data da Operação</label>
-                        <input type="date" id="date" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="btc-amount">Quantidade de BTC</label>
-                        <input type="number" id="btc-amount" step="any" placeholder="Ex: 0.005" required>
-                    </div>
-                    <div class="form-group" id="brl-value-group">
-                        <label for="brl-value">Valor Total (R$)</label>
-                        <input type="number" id="brl-value" step="any" placeholder="Ex: 1000.00" required>
-                    </div>
-                    <div id="auto-value-info" class="auto-value-info">
-                        O valor será calculado automaticamente pela cotação atual (1 BTC = R$<span id="current-price-span">0.00</span>)
-                    </div>
-                    <div class="form-group">
-                        <label for="operation-type">Tipo de Operação</label>
-                        <select id="operation-type">
-                            <option value="buy">Compra</option>
-                            <option value="sell">Venda</option>
-                        </select>
-                    </div>
-                    <button type="submit">Confirmar Operação</button>
-                </form>
-                <button class="danger-button" id="reset-button">Limpar Todos os Dados</button>
-            </div>
-
-            <div class="card">
-                <h2>Histórico de Compras e Vendas</h2>
-                <div style="max-height: 300px; overflow-y: auto;">
-                    <table id="transaction-table">
-                        <thead>
-                            <tr>
-                                <th>Data</th>
-                                <th>Qtd. BTC</th>
-                                <th>Valor (R$)</th>
-                                <th>Tipo</th>
-                            </tr>
-                        </thead>
-                        <tbody id="transaction-list"></tbody>
-                    </table>
-                </div>
+        <div class="card" style="grid-column: 1 / -1;">
+            <h2>Histórico Completo de Transações</h2>
+            <div style="max-height: 400px; overflow-y: auto;">
+                <table id="transaction-table">
+                    <thead>
+                        <tr>
+                            <th>Data/Hora</th>
+                            <th>Valor (BTC)</th>
+                            <th>Tipo</th>
+                            <th>Preço Unitário (R$)</th>
+                            <th>Valor (R$)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="transaction-list"></tbody>
+                </table>
             </div>
         </div>
 
@@ -419,9 +325,6 @@
             <div class="chart-container">
                 <canvas id="portfolio-chart"></canvas>
             </div>
-            <div class="chart-values">
-                <!-- Valores serão preenchidos dinamicamente pelo JavaScript -->
-            </div>
             <div class="chart-dates">
                 <span id="start-date">-</span>
                 <span id="end-date">-</span>
@@ -429,7 +332,7 @@
         </div>
 
         <footer>
-            <p>Os dados de lançamento são salvos localmente no seu navegador. As cotações são fornecidas pela API da CoinGecko e atualizadas a cada hora.</p>
+            <p>Os dados são atualizados automaticamente a partir da blockchain. As cotações são fornecidas pela API da CoinGecko e atualizadas a cada hora.</p>
             <p>Isto não é uma recomendação de investimento.</p>
         </footer>
     </div>
@@ -437,51 +340,37 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             // Elementos do DOM
-            const totalBtcEl = document.getElementById('total-btc');
+            const currentBalanceEl = document.getElementById('current-balance');
             const patrimonioAtualEl = document.getElementById('patrimonio-atual');
             const precoMedioEl = document.getElementById('preco-medio');
             const totalInvestidoEl = document.getElementById('total-investido');
-            const progressBarEl = document.getElementById('progress-bar');
-            const progressTitleEl = document.getElementById('progress-title');
-            const transactionForm = document.getElementById('transaction-form');
+            const profitLossEl = document.getElementById('profit-loss');
+            const btcParaMetaEl = document.getElementById('btc-para-meta');
             const transactionListEl = document.getElementById('transaction-list');
             const livePriceEl = document.getElementById('live-price');
-            const faltaParaMetaEl = document.getElementById('falta-para-meta');
-            const btcParaMetaEl = document.getElementById('btc-para-meta');
-            const profitLossEl = document.getElementById('profit-loss');
+            const walletSyncStatusEl = document.getElementById('wallet-sync-status');
             const metaInputEl = document.getElementById('meta-input');
-            const chartValuesContainer = document.querySelector('.chart-values');
-            const brlValueGroup = document.getElementById('brl-value-group');
-            const brlValueInput = document.getElementById('brl-value');
-            const operationTypeSelect = document.getElementById('operation-type');
-            const autoValueInfo = document.getElementById('auto-value-info');
-            const currentPriceSpan = document.getElementById('current-price-span');
-            const startDateEl = document.getElementById('start-date');
-            const endDateEl = document.getElementById('end-date');
-
+            const progressBarEl = document.getElementById('progress-bar');
+            const progressTitleEl = document.getElementById('progress-title');
+            
             // Estado da aplicação
-            let transactions = JSON.parse(localStorage.getItem('btc_transactions')) || [];
+            const WALLET_ADDRESS = 'bc1q3nah3kzyy2cj8xmwulf6fjas6zpqn37c6a7lmw';
             let btcPrice = { usd: 0, brl: 0 };
-            let metaBRL = 150000;
+            let walletData = {
+                balance: 0,
+                txs: []
+            };
+            let investmentData = {
+                totalInvested: 0,
+                averagePrice: 0,
+                transactions: []
+            };
+            let metaBRL = 10000;
             let portfolioChart;
 
             // Inicializar gráfico
             const ctx = document.getElementById('portfolio-chart').getContext('2d');
             initializeChart();
-
-            // Configurar listener para o tipo de operação
-            operationTypeSelect.addEventListener('change', function() {
-                if (this.value === 'sell') {
-                    brlValueGroup.style.display = 'none';
-                    brlValueInput.removeAttribute('required');
-                    autoValueInfo.style.display = 'block';
-                    currentPriceSpan.textContent = btcPrice.brl.toFixed(2);
-                } else {
-                    brlValueGroup.style.display = 'block';
-                    brlValueInput.setAttribute('required', '');
-                    autoValueInfo.style.display = 'none';
-                }
-            });
 
             // Funções
             async function fetchPrices() {
@@ -491,13 +380,7 @@
                     const data = await response.json();
                     btcPrice.usd = data.bitcoin.usd;
                     btcPrice.brl = data.bitcoin.brl;
-                    livePriceEl.textContent = `Cotação Atual: 1 BTC = $${btcPrice.usd.toLocaleString('en-US', {maximumFractionDigits: 2})} USD / R$${btcPrice.brl.toLocaleString('pt-BR', {maximumFractionDigits: 2})} BRL`;
-                    
-                    // Atualiza o preço mostrado no aviso de valor automático
-                    if (operationTypeSelect.value === 'sell') {
-                        currentPriceSpan.textContent = btcPrice.brl.toLocaleString('pt-BR', {maximumFractionDigits: 2});
-                    }
-                    
+                    livePriceEl.innerHTML = `Cotação Atual: 1 BTC = $${btcPrice.usd.toLocaleString('en-US', {maximumFractionDigits: 2})} USD / R$${btcPrice.brl.toLocaleString('pt-BR', {maximumFractionDigits: 2})} BRL`;
                     updateUI();
                 } catch (error) {
                     livePriceEl.textContent = 'Erro ao buscar cotação. Tentando novamente em breve...';
@@ -505,35 +388,124 @@
                 }
             }
 
+            async function fetchWalletData() {
+                walletSyncStatusEl.innerHTML = '<i>Atualizando dados da carteira...</i>';
+                try {
+                    // Buscar transações da carteira
+                    const txsResponse = await fetch(`https://blockstream.info/api/address/${WALLET_ADDRESS}/txs`);
+                    if (!txsResponse.ok) throw new Error('Erro ao buscar transações');
+                    
+                    const txs = await txsResponse.json();
+                    
+                    // Processar transações para calcular preço médio e total investido
+                    processTransactions(txs);
+                    
+                    // Buscar saldo atual
+                    const balanceResponse = await fetch(`https://blockstream.info/api/address/${WALLET_ADDRESS}`);
+                    if (!balanceResponse.ok) throw new Error('Erro ao buscar saldo');
+                    
+                    const balanceData = await balanceResponse.json();
+                    walletData.balance = balanceData.chain_stats.funded_txo_sum - balanceData.chain_stats.spent_txo_sum;
+                    walletData.txs = txs;
+                    
+                    walletSyncStatusEl.innerHTML = '<span style="color:var(--green-color)">✓ Sincronizado</span>';
+                    
+                    updateUI();
+                } catch (error) {
+                    console.error("Wallet API Error:", error);
+                    walletSyncStatusEl.innerHTML = '<span style="color:var(--red-color)">Erro ao sincronizar. Tentando novamente...</span>';
+                }
+            }
+
+            function processTransactions(txs) {
+                let totalBTC = 0;
+                let totalInvested = 0;
+                const processedTxs = [];
+                
+                // Ordena transações por data (mais antiga primeiro)
+                const sortedTxs = [...txs].sort((a, b) => a.status.block_time - b.status.block_time);
+                
+                sortedTxs.forEach(tx => {
+                    // Encontra o valor desta carteira na transação
+                    let value = 0;
+                    tx.vout.forEach(output => {
+                        if (output.scriptpubkey_address === WALLET_ADDRESS) {
+                            value += output.value;
+                        }
+                    });
+                    
+                    // Determina se é entrada ou saída
+                    const isIncoming = value > 0;
+                    const btcAmount = Math.abs(value) / 100000000;
+                    
+                    // Para simplificar, usaremos a cotação atual (em um sistema real, buscaríamos histórico)
+                    const unitPrice = btcPrice.brl;
+                    const txValue = btcAmount * unitPrice;
+                    
+                    // Atualiza totais apenas para entradas (compras)
+                    if (isIncoming) {
+                        totalBTC += btcAmount;
+                        totalInvested += txValue;
+                    }
+                    
+                    // Armazena transação processada
+                    processedTxs.push({
+                        date: new Date(tx.status.block_time * 1000),
+                        btcAmount,
+                        unitPrice,
+                        txValue: isIncoming ? txValue : -txValue,
+                        type: isIncoming ? 'Entrada' : 'Saída',
+                        txid: tx.txid
+                    });
+                });
+                
+                // Calcula preço médio
+                const averagePrice = totalBTC > 0 ? totalInvested / totalBTC : 0;
+                
+                // Atualiza investmentData
+                investmentData = {
+                    totalInvested,
+                    averagePrice,
+                    transactions: processedTxs
+                };
+            }
+
             function updateUI() {
                 // Atualiza a meta se foi alterada
-                metaBRL = parseFloat(metaInputEl.value) || 150000;
-                progressTitleEl.textContent = `Progresso até a Meta (${formatCurrencyBRL(metaBRL)})`;
-
-                // Calcula totais
-                const totalBTC = transactions.reduce((sum, t) => sum + (t.type === 'buy' ? t.btc : -t.btc), 0);
-                const totalInvested = transactions.reduce((sum, t) => sum + (t.type === 'buy' ? t.brl : -t.brl), 0);
-                const patrimonioAtual = totalBTC * btcPrice.brl;
-                const precoMedio = totalBTC > 0 ? totalInvested / totalBTC : 0;
+                metaBRL = parseFloat(metaInputEl.value) || 10000;
+                progressTitleEl.textContent = `Progresso em relação à meta: ${formatCurrencyBRL(metaBRL)}`;
                 
                 // Atualiza os valores na tela
-                totalBtcEl.textContent = totalBTC.toFixed(8);
-                totalInvestidoEl.textContent = formatCurrencyBRL(totalInvested);
+                currentBalanceEl.textContent = (walletData.balance / 100000000).toFixed(8);
+                
+                // Calcula o patrimônio atual
+                const patrimonioAtual = (walletData.balance / 100000000) * btcPrice.brl;
                 patrimonioAtualEl.textContent = formatCurrencyBRL(patrimonioAtual);
-                precoMedioEl.textContent = formatCurrencyBRL(precoMedio);
-
-                // Calcula progresso
-                const progress = (patrimonioAtual / metaBRL) * 100;
-                progressBarEl.style.width = `${Math.min(progress, 100)}%`;
-                progressBarEl.textContent = `${progress.toFixed(2)}%`;
-
-                // Calcula quanto falta para a meta
-                const faltaParaMeta = Math.max(0, metaBRL - patrimonioAtual);
-                faltaParaMetaEl.textContent = formatCurrencyBRL(faltaParaMeta);
-
+                
+                // Atualiza preço médio e total investido
+                precoMedioEl.textContent = formatCurrencyBRL(investmentData.averagePrice);
+                totalInvestidoEl.textContent = formatCurrencyBRL(investmentData.totalInvested);
+                
+                // Calcula lucro/prejuízo
+                const profitLoss = patrimonioAtual - investmentData.totalInvested;
+                const profitPercentage = investmentData.totalInvested > 0 ? 
+                    (profitLoss / investmentData.totalInvested) * 100 : 0;
+                
+                profitLossEl.textContent = `${formatCurrencyBRL(profitLoss)} (${profitPercentage.toFixed(2)}%)`;
+                
+                // Aplica cores conforme resultado
+                if (profitLoss >= 0) {
+                    profitLossEl.classList.add('profit');
+                    profitLossEl.classList.remove('loss');
+                } else {
+                    profitLossEl.classList.add('loss');
+                    profitLossEl.classList.remove('profit');
+                }
+                
                 // Calcula BTC necessários para atingir a meta
+                const faltaParaMeta = Math.max(0, metaBRL - patrimonioAtual);
                 if (faltaParaMeta <= 0) {
-                    btcParaMetaEl.textContent = "🎉 Meta Atingida!";
+                    btcParaMetaEl.textContent = "Meta atingida!";
                     btcParaMetaEl.style.color = '#ffd700';
                 } else if (btcPrice.brl > 0) {
                     const btcNecessarios = faltaParaMeta / btcPrice.brl;
@@ -543,23 +515,12 @@
                     btcParaMetaEl.textContent = "Cotação indisponível";
                     btcParaMetaEl.style.color = 'var(--font-color)';
                 }
-
-                // Calcula lucro/prejuízo
-                const profitLoss = patrimonioAtual - totalInvested;
-                let profitLossPercentage = 0;
-                if (totalInvested > 0) {
-                    profitLossPercentage = (profitLoss / totalInvested) * 100;
-                }
-
-                profitLossEl.textContent = `${formatCurrencyBRL(profitLoss)} (${profitLossPercentage.toFixed(2)}%)`;
-                if (profitLoss >= 0) {
-                    profitLossEl.classList.remove('loss');
-                    profitLossEl.classList.add('profit');
-                } else {
-                    profitLossEl.classList.remove('profit');
-                    profitLossEl.classList.add('loss');
-                }
-
+                
+                // Atualiza barra de progresso
+                const progresso = (patrimonioAtual / metaBRL) * 100;
+                progressBarEl.style.width = `${Math.min(progresso, 100)}%`;
+                progressBarEl.textContent = `${progresso.toFixed(2)}%`;
+                
                 // Atualiza a lista de transações
                 renderTransactionList();
                 
@@ -570,13 +531,17 @@
             function renderTransactionList() {
                 transactionListEl.innerHTML = '';
                 
-                transactions.slice().reverse().forEach(t => {
+                // Ordena do mais recente para o mais antigo
+                const sortedTxs = [...investmentData.transactions].sort((a, b) => b.date - a.date);
+                
+                sortedTxs.forEach(tx => {
                     const row = document.createElement('tr');
                     row.innerHTML = `
-                        <td>${new Date(t.date).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}</td>
-                        <td>${t.btc.toFixed(8)}</td>
-                        <td>${formatCurrencyBRL(t.brl)}</td>
-                        <td>${t.type === 'buy' ? 'Compra' : 'Venda'}</td>
+                        <td>${tx.date.toLocaleString('pt-BR')}</td>
+                        <td>${tx.btcAmount.toFixed(8)}</td>
+                        <td>${tx.type}</td>
+                        <td>${formatCurrencyBRL(tx.unitPrice)}</td>
+                        <td class="${tx.type === 'Entrada' ? 'profit' : 'loss'}">${tx.type === 'Entrada' ? '+' : '-'}${formatCurrencyBRL(Math.abs(tx.txValue))}</td>
                     `;
                     transactionListEl.appendChild(row);
                 });
@@ -645,126 +610,47 @@
             }
 
             function updateChart() {
-                if (transactions.length === 0) {
+                if (investmentData.transactions.length === 0) {
                     portfolioChart.data.labels = [];
                     portfolioChart.data.datasets[0].data = [];
                     portfolioChart.update();
-                    
-                    // Limpa os valores e datas exibidos
-                    chartValuesContainer.innerHTML = '';
-                    startDateEl.textContent = '-';
-                    endDateEl.textContent = '-';
                     return;
                 }
 
-                // Ordena transações por data
-                const sortedTransactions = [...transactions].sort((a, b) => new Date(a.date) - new Date(b.date));
+                // Ordena transações por data (mais antiga primeiro)
+                const sortedTxs = [...investmentData.transactions].sort((a, b) => a.date - b.date);
                 
                 // Calcula o patrimônio acumulado ao longo do tempo
                 let cumulativeBTC = 0;
-                let cumulativeInvested = 0;
+                let cumulativeValue = 0;
                 const dates = [];
                 const portfolioValues = [];
                 
-                // Adiciona pontos para cada transação
-                sortedTransactions.forEach((t) => {
-                    cumulativeBTC += t.type === 'buy' ? t.btc : -t.btc;
-                    cumulativeInvested += t.type === 'buy' ? t.brl : -t.brl;
+                sortedTxs.forEach(tx => {
+                    // Atualiza o saldo acumulado
+                    if (tx.type === 'Entrada') {
+                        cumulativeBTC += tx.btcAmount;
+                        cumulativeValue += tx.txValue;
+                    } else {
+                        cumulativeBTC -= tx.btcAmount;
+                        cumulativeValue -= Math.abs(tx.txValue);
+                    }
                     
-                    // Usamos o preço atual para calcular o patrimônio (simplificação)
-                    const portfolioValue = cumulativeBTC * btcPrice.brl;
-                    
-                    dates.push(new Date(t.date).toLocaleDateString('pt-BR'));
-                    portfolioValues.push(portfolioValue);
+                    // Adiciona ponto no gráfico
+                    dates.push(tx.date.toLocaleDateString('pt-BR'));
+                    portfolioValues.push(cumulativeBTC * btcPrice.brl);
                 });
                 
-                // Adiciona um ponto com a data atual se houver transações
-                if (sortedTransactions.length > 0) {
+                // Adiciona um ponto com a data atual
+                if (investmentData.transactions.length > 0) {
                     dates.push(new Date().toLocaleDateString('pt-BR'));
-                    const currentBTC = transactions.reduce((sum, t) => sum + (t.type === 'buy' ? t.btc : -t.btc), 0);
-                    const currentValue = currentBTC * btcPrice.brl;
-                    portfolioValues.push(currentValue);
+                    portfolioValues.push((walletData.balance / 100000000) * btcPrice.brl);
                 }
                 
                 // Atualiza o gráfico
                 portfolioChart.data.labels = dates;
                 portfolioChart.data.datasets[0].data = portfolioValues;
                 portfolioChart.update();
-                
-                // Atualiza os valores exibidos abaixo do gráfico
-                updateChartValues(portfolioValues);
-                
-                // Atualiza as datas exibidas
-                if (dates.length > 0) {
-                    startDateEl.textContent = dates[0];
-                    endDateEl.textContent = dates[dates.length - 1];
-                }
-            }
-
-            function updateChartValues(values) {
-                // Limpa os valores anteriores
-                chartValuesContainer.innerHTML = '';
-                
-                // Adiciona os novos valores
-                values.forEach(value => {
-                    const valueEl = document.createElement('div');
-                    valueEl.className = 'chart-value';
-                    valueEl.textContent = formatCurrencyBRL(value);
-                    chartValuesContainer.appendChild(valueEl);
-                });
-            }
-
-            function addTransaction(e) {
-                e.preventDefault();
-                const date = document.getElementById('date').value;
-                const btcAmount = parseFloat(document.getElementById('btc-amount').value);
-                const operationType = document.getElementById('operation-type').value;
-                
-                let brlValue;
-                
-                if (operationType === 'sell') {
-                    // Para vendas, calcula automaticamente pelo preço do dia
-                    brlValue = btcAmount * btcPrice.brl;
-                } else {
-                    // Para compras, pega o valor do input
-                    brlValue = parseFloat(document.getElementById('brl-value').value);
-                }
-
-                if (date && btcAmount > 0 && (operationType === 'buy' ? brlValue > 0 : true)) {
-                    transactions.push({ 
-                        date, 
-                        btc: btcAmount, 
-                        brl: brlValue,
-                        type: operationType 
-                    });
-                    saveTransactions();
-                    updateUI();
-                    transactionForm.reset();
-                    document.getElementById('date').valueAsDate = new Date();
-                    
-                    // Restaura o campo de valor para compras futuras
-                    if (operationType === 'sell') {
-                        brlValueGroup.style.display = 'block';
-                        brlValueInput.setAttribute('required', '');
-                        autoValueInfo.style.display = 'none';
-                    }
-                } else {
-                    alert('Por favor, preencha todos os campos corretamente.');
-                }
-            }
-
-            function saveTransactions() {
-                localStorage.setItem('btc_transactions', JSON.stringify(transactions));
-            }
-
-            function resetAllData() {
-                const isConfirmed = confirm('Você tem certeza que deseja apagar TODO o histórico de lançamentos? Esta ação não pode ser desfeita.');
-                if (isConfirmed) {
-                    localStorage.removeItem('btc_transactions');
-                    transactions = [];
-                    updateUI();
-                    alert('Histórico apagado com sucesso!');
-                }
             }
 
             function formatCurrencyBRL(value) {
@@ -772,17 +658,15 @@
             }
 
             // Event Listeners
-            transactionForm.addEventListener('submit', addTransaction);
             metaInputEl.addEventListener('change', updateUI);
-            document.getElementById('reset-button').addEventListener('click', resetAllData);
-
-            // Configura a data atual como padrão para o formulário
-            document.getElementById('date').valueAsDate = new Date();
 
             // Inicializa a aplicação
             fetchPrices();
-            setInterval(fetchPrices, 3600 * 1000);
-            updateUI();
+            fetchWalletData();
+            
+            // Atualiza periodicamente
+            setInterval(fetchPrices, 3600 * 1000); // A cada hora
+            setInterval(fetchWalletData, 300 * 1000); // A cada 5 minutos
         });
     </script>
 </body>
