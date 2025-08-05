@@ -4,10 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel Automático Bitcoin (BTC)</title>
-    
-    <!-- Incluindo Chart.js para os gráficos -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
     <style>
         :root {
             --bg-color: #1a1a2e;
@@ -20,7 +17,6 @@
             --profit-color: #03c04a;
             --loss-color: #ff4757;
         }
-
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bg-color);
@@ -28,7 +24,6 @@
             margin: 0;
             padding: 20px;
         }
-
         .container {
             max-width: 1200px;
             margin: auto;
@@ -36,7 +31,6 @@
             grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: 20px;
         }
-
         header {
             grid-column: 1 / -1;
             text-align: center;
@@ -44,7 +38,6 @@
             padding-bottom: 15px;
             margin-bottom: 10px;
         }
-
         header img {
             max-width: 150px;
             margin-bottom: 15px;
@@ -52,18 +45,15 @@
             margin-left: auto;
             margin-right: auto;
         }
-
         header h1 {
             margin: 0;
             color: var(--primary-color);
         }
-        
         header p {
             margin-top: 5px;
             font-size: 0.9em;
             opacity: 0.7;
         }
-
         .card {
             background-color: var(--card-color);
             padding: 20px;
@@ -71,48 +61,40 @@
             border: 1px solid var(--border-color);
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
-
         .card h2 {
             margin-top: 0;
             color: var(--primary-color);
             border-bottom: 1px solid var(--border-color);
             padding-bottom: 10px;
         }
-
         .dashboard-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 20px;
             margin-top: 15px;
         }
-
         .metric {
             text-align: center;
         }
-
         .metric .label {
             font-size: 0.9em;
             opacity: 0.8;
             min-height: 30px;
         }
-
         .metric .value {
             font-size: 1.6em;
             font-weight: bold;
             margin-top: 5px;
         }
-
         #patrimonio-atual {
             color: var(--green-color);
         }
-
         .progress-bar-container {
             width: 100%;
             background-color: var(--bg-color);
             border-radius: 5px;
             margin-top: 15px;
         }
-
         #progress-bar {
             width: 0%;
             height: 20px;
@@ -124,7 +106,6 @@
             font-weight: bold;
             transition: width 0.5s ease-in-out;
         }
-
         .wallet-info {
             background: rgba(15, 52, 96, 0.3);
             padding: 10px;
@@ -132,36 +113,29 @@
             margin-bottom: 15px;
             word-break: break-all;
         }
-
         #transaction-table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 15px;
         }
-        
         #transaction-table th, #transaction-table td {
             padding: 8px;
             text-align: left;
             border-bottom: 1px solid var(--border-color);
         }
-
         #transaction-table th {
             font-size: 0.9em;
             color: var(--primary-color);
         }
-        
         #transaction-table td {
             font-size: 0.95em;
         }
-
         .profit {
             color: var(--profit-color);
         }
-
         .loss {
             color: var(--loss-color);
         }
-
         footer {
             grid-column: 1 / -1;
             text-align: center;
@@ -171,14 +145,11 @@
             padding-top: 10px;
             border-top: 1px solid var(--border-color);
         }
-
-        /* Estilo para o gráfico */
         .chart-container {
             position: relative;
             height: 300px;
             width: 100%;
         }
-
         .chart-dates {
             display: flex;
             justify-content: space-between;
@@ -186,8 +157,6 @@
             font-size: 0.8em;
             opacity: 0.7;
         }
-
-        /* Campo de meta */
         #meta-input {
             width: 200px;
             padding: 8px;
@@ -197,59 +166,48 @@
             border-radius: 5px;
             color: var(--font-color);
         }
-
         .meta-info {
             margin-top: 15px;
             padding: 10px;
             background: rgba(15, 52, 96, 0.3);
             border-radius: 5px;
         }
-
         @media (max-width: 768px) {
             .dashboard-grid {
                 grid-template-columns: 1fr 1fr;
             }
         }
-    
-    @media (max-width: 480px) {
-        header p {
-            display: block;
-            font-size: 0.85em;
-            text-align: center;
+        @media (max-width: 480px) {
+            header p {
+                display: block;
+                font-size: 0.85em;
+                text-align: center;
+            }
+            #meta-input {
+                width: 100%;
+            }
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            .metric .label {
+                font-size: 0.85em;
+            }
+            .metric .value {
+                font-size: 1.4em;
+            }
+            .card h2 {
+                font-size: 1.1em;
+            }
+            .chart-container {
+                height: 250px;
+            }
+            header img {
+                max-width: 120px;
+            }
         }
-
-        #meta-input {
-            width: 100%;
-        }
-
-        .dashboard-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .metric .label {
-            font-size: 0.85em;
-        }
-
-        .metric .value {
-            font-size: 1.4em;
-        }
-
-        .card h2 {
-            font-size: 1.1em;
-        }
-
-        .chart-container {
-            height: 250px;
-        }
-
-        header img {
-            max-width: 120px;
-        }
-    }
     </style>
 </head>
 <body>
-
     <div class="container">
         <header>
             <img src="https://logospng.org/download/bitcoin/logo-bitcoin-4096.png" alt="Logo Bitcoin">
@@ -420,52 +378,79 @@
             function processTransactions(txs) {
                 let totalBTC = 0;
                 let totalInvested = 0;
+                let costBasis = 0; // Base de custo para cálculo FIFO
                 const processedTxs = [];
                 
                 // Ordena transações por data (mais antiga primeiro)
                 const sortedTxs = [...txs].sort((a, b) => a.status.block_time - b.status.block_time);
                 
                 sortedTxs.forEach(tx => {
-                    // Encontra o valor desta carteira na transação
-                    let value = 0;
+                    // Identifica tanto entradas quanto saídas
+                    const isIncoming = tx.vout.some(v => v.scriptpubkey_address === WALLET_ADDRESS);
+                    const isOutgoing = tx.vin.some(i => i.prevout?.scriptpubkey_address === WALLET_ADDRESS);
+                    
+                    // Calcula valores recebidos
+                    let valueReceived = 0;
                     tx.vout.forEach(output => {
                         if (output.scriptpubkey_address === WALLET_ADDRESS) {
-                            value += output.value;
+                            valueReceived += output.value;
                         }
                     });
                     
-                    // Determina se é entrada ou saída
-                    const isIncoming = value > 0;
-                    const btcAmount = Math.abs(value) / 100000000;
-                    
-                    // Para simplificar, usaremos a cotação atual (em um sistema real, buscaríamos histórico)
-                    const unitPrice = btcPrice.brl;
-                    const txValue = btcAmount * unitPrice;
-                    
-                    // Atualiza totais apenas para entradas (compras)
-                    if (isIncoming) {
-                        totalBTC += btcAmount;
-                        totalInvested += txValue;
+                    // Calcula valores enviados
+                    let valueSent = 0;
+                    if (isOutgoing) {
+                        tx.vin.forEach(input => {
+                            if (input.prevout?.scriptpubkey_address === WALLET_ADDRESS) {
+                                valueSent += input.prevout.value;
+                            }
+                        });
                     }
                     
-                    // Armazena transação processada
-                    processedTxs.push({
-                        date: new Date(tx.status.block_time * 1000),
-                        btcAmount,
-                        unitPrice,
-                        txValue: isIncoming ? txValue : -txValue,
-                        type: isIncoming ? 'Entrada' : 'Saída',
-                        txid: tx.txid
-                    });
+                    // Processa entradas
+                    if (valueReceived > 0) {
+                        const btcAmount = valueReceived / 100000000;
+                        const txValue = btcAmount * btcPrice.brl;
+                        
+                        totalBTC += btcAmount;
+                        totalInvested += txValue;
+                        costBasis += txValue; // Adiciona ao custo total
+                        
+                        processedTxs.push({
+                            date: new Date(tx.status.block_time * 1000),
+                            btcAmount,
+                            unitPrice: btcPrice.brl,
+                            txValue,
+                            type: 'Entrada',
+                            txid: tx.txid
+                        });
+                    }
+                    
+                    // Processa saídas
+                    if (valueSent > 0) {
+                        const btcAmount = valueSent / 100000000;
+                        
+                        // Calcula o valor da saída baseado no preço médio das entradas
+                        const averagePrice = totalBTC > 0 ? costBasis / totalBTC : 0;
+                        const txValue = btcAmount * averagePrice;
+                        
+                        totalBTC -= btcAmount;
+                        costBasis -= txValue; // Remove proporcionalmente do custo total
+                        
+                        processedTxs.push({
+                            date: new Date(tx.status.block_time * 1000),
+                            btcAmount,
+                            unitPrice: averagePrice,
+                            txValue: -txValue,
+                            type: 'Saída',
+                            txid: tx.txid
+                        });
+                    }
                 });
                 
-                // Calcula preço médio
-                const averagePrice = totalBTC > 0 ? totalInvested / totalBTC : 0;
-                
-                // Atualiza investmentData
                 investmentData = {
-                    totalInvested,
-                    averagePrice,
+                    totalInvested: costBasis, // Usa o costBasis residual
+                    averagePrice: totalBTC > 0 ? costBasis / totalBTC : 0,
                     transactions: processedTxs
                 };
             }
@@ -486,18 +471,19 @@
                 precoMedioEl.textContent = formatCurrencyBRL(investmentData.averagePrice);
                 totalInvestidoEl.textContent = formatCurrencyBRL(investmentData.totalInvested);
                 
-                // Calcula lucro/prejuízo
-                const profitLoss = patrimonioAtual - investmentData.totalInvested;
+                // Calcula lucro/prejuízo ABSOLUTO (valor em reais)
+                const profitLossValue = patrimonioAtual - investmentData.totalInvested;
+                const profitLossAbs = Math.abs(profitLossValue);
                 const profitPercentage = investmentData.totalInvested > 0 ? 
-                    (profitLoss / investmentData.totalInvested) * 100 : 0;
+                    (profitLossValue / investmentData.totalInvested) * 100 : 0;
                 
-                profitLossEl.textContent = `${formatCurrencyBRL(profitLoss)} (${profitPercentage.toFixed(2)}%)`;
-                
-                // Aplica cores conforme resultado
-                if (profitLoss >= 0) {
+                // Formata a exibição do lucro/prejuízo
+                if (profitLossValue >= 0) {
+                    profitLossEl.textContent = `+${formatCurrencyBRL(profitLossAbs)} (${profitPercentage.toFixed(2)}%)`;
                     profitLossEl.classList.add('profit');
                     profitLossEl.classList.remove('loss');
                 } else {
+                    profitLossEl.textContent = `-${formatCurrencyBRL(profitLossAbs)} (${profitPercentage.toFixed(2)}%)`;
                     profitLossEl.classList.add('loss');
                     profitLossEl.classList.remove('profit');
                 }
@@ -505,15 +491,10 @@
                 // Calcula BTC necessários para atingir a meta
                 const faltaParaMeta = Math.max(0, metaBRL - patrimonioAtual);
                 if (faltaParaMeta <= 0) {
-                    btcParaMetaEl.textContent = "Meta atingida!";
-                    btcParaMetaEl.style.color = '#ffd700';
-                } else if (btcPrice.brl > 0) {
-                    const btcNecessarios = faltaParaMeta / btcPrice.brl;
-                    btcParaMetaEl.textContent = `${btcNecessarios.toFixed(8)} BTC`;
-                    btcParaMetaEl.style.color = 'var(--primary-color)';
+                    btcParaMetaEl.innerHTML = '<span style="color:#ffd700">🎯 Meta Atingida!</span>';
                 } else {
-                    btcParaMetaEl.textContent = "Cotação indisponível";
-                    btcParaMetaEl.style.color = 'var(--font-color)';
+                    const btcNecessarios = (faltaParaMeta / btcPrice.brl).toFixed(8);
+                    btcParaMetaEl.innerHTML = `<span style="color:var(--primary-color)">${btcNecessarios} BTC</span>`;
                 }
                 
                 // Atualiza barra de progresso
