@@ -62,6 +62,21 @@
         
         .wallet-info {
             text-align: left;
+            position: relative;
+        }
+        
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: var(--border-radius);
+            z-index: 10;
         }
         
         h1 {
@@ -106,6 +121,7 @@
             padding: 20px;
             box-shadow: var(--shadow);
             text-align: center;
+            position: relative;
         }
         
         .metric-title {
@@ -330,6 +346,11 @@
     </style>
 </head>
 <body>
+    <div class="loading-overlay" id="initialLoading">
+        <div class="spinner"></div>
+        <div>Carregando dados da carteira...</div>
+    </div>
+
     <header>
         <div class="header-content">
             <img src="https://s2.coinmarketcap.com/static/img/coins/64x64/1.png" alt="BTC Logo" class="logo">
@@ -371,39 +392,15 @@
     <section class="transactions-section">
         <h2 class="section-title">Histórico de Transações</h2>
         <div class="transactions-list" id="transactionsList">
-            <div class="transaction">
-                <div class="transaction-details">
-                    <div class="transaction-type receive">Recebimento</div>
-                    <div class="transaction-date">28/08/2025 10:54:41</div>
-                    <div class="status">
-                        <span class="status-indicator confirmed"></span>
-                        Confirmada
-                    </div>
-                </div>
-                <div class="transaction-amount">
-                    <div class="transaction-btc receive">+0.00040598 BTC</div>
-                    <div class="transaction-fiat">R$246,45</div>
-                </div>
-            </div>
-            <div class="transaction">
-                <div class="transaction-details">
-                    <div class="transaction-type send">Envio</div>
-                    <div class="transaction-date">28/08/2025 11:14:56</div>
-                    <div class="status">
-                        <span class="status-indicator confirmed"></span>
-                        Confirmada
-                    </div>
-                </div>
-                <div class="transaction-amount">
-                    <div class="transaction-btc send">-0.00009133 BTC</div>
-                    <div class="transaction-fiat">R$55,45</div>
-                </div>
+            <div class="loading">
+                <div class="spinner"></div>
+                <div>Carregando transações...</div>
             </div>
         </div>
     </section>
 
     <footer>
-        <p>Dados fornecidos por Mempool.space & CoinGecko API • Atualizado em: <span id="lastUpdated">29/08/2025 15:30:45</span></p>
+        <p>Dados fornecidos por Mempool.space & CoinGecko API • Atualizado em: <span id="lastUpdated">--/--/---- --:--:--</span></p>
     </footer>
 
     <script>
@@ -414,9 +411,9 @@
         
         // Estado da aplicação
         let transactions = [];
-        let currentBtcPrice = 607039; // Preço atual do BTC em BRL
+        let currentBtcPrice = 0;
         let lastUpdated = new Date().toISOString();
-        let btcBalance = 0.00031465; // Saldo fixo baseado na sua informação
+        let btcBalance = 0;
         
         // Elementos DOM
         const elements = {
@@ -429,13 +426,14 @@
             refreshBtn: document.getElementById('refreshBtn'),
             clearBtn: document.getElementById('clearBtn'),
             messageContainer: document.getElementById('messageContainer'),
-            lastUpdated: document.getElementById('lastUpdated')
+            lastUpdated: document.getElementById('lastUpdated'),
+            initialLoading: document.getElementById('initialLoading')
         };
         
         // Inicialização
         document.addEventListener('DOMContentLoaded', () => {
-            // Configurar dados iniciais baseados na sua carteira
-            setupInitialData();
+            // Iniciar atualização automática ao carregar a página
+            updateData();
             
             // Configurar atualização periódica
             setInterval(updateData, UPDATE_INTERVAL);
@@ -445,61 +443,29 @@
             elements.clearBtn.addEventListener('click', clearData);
         });
         
-        // Configurar dados iniciais
-        function setupInitialData() {
-            // Dados baseados nas suas informações
-            const initialTransactions = [
-                {
-                    id: 'tx_001',
-                    type: 'receive',
-                    amount: 0.00040598,
-                    pricePerBtc: 607039, // Preço aproximado na época
-                    total: 246.45,
-                    date: new Date('2025-08-28T10:54:41').toISOString(),
-                    confirmations: 6,
-                    hash: 'abc123def456',
-                    fee: 0.00000050,
-                    block: 1234567
-                },
-                {
-                    id: 'tx_002',
-                    type: 'send',
-                    amount: 0.00009133,
-                    pricePerBtc: 607039, // Preço aproximado na época
-                    total: 55.45,
-                    date: new Date('2025-08-28T11:14:56').toISOString(),
-                    confirmations: 6,
-                    hash: 'def456ghi789',
-                    fee: 0.00000030,
-                    block: 1234568
-                }
-            ];
-            
-            transactions = initialTransactions;
-            
-            // Atualizar UI com dados iniciais
-            updateUI();
-            
-            // Mostrar preço atual
-            elements.priceInfo.textContent = `Preço atual: R$${currentBtcPrice.toLocaleString('pt-BR')}`;
-            elements.lastUpdated.textContent = new Date().toLocaleString('pt-BR');
-        }
-        
         // Atualizar todos os dados
         async function updateData() {
             showMessage("Atualizando dados...", "success");
             
             try {
                 // Buscar preço do Bitcoin primeiro
-                await fetchBtcPrice();
+                const priceSuccess = await fetchBtcPrice();
                 
-                // Buscar transações e saldo
-                await fetchWalletData();
-                
-                showMessage("Dados atualizados com sucesso!", "success");
+                if (priceSuccess) {
+                    // Buscar transações e saldo
+                    await fetchWalletData();
+                    showMessage("Dados atualizados com sucesso!", "success");
+                } else {
+                    showMessage("Erro ao buscar preço do Bitcoin", "error");
+                }
             } catch (error) {
                 console.error("Erro ao atualizar dados:", error);
                 showMessage("Erro ao atualizar dados. Verifique sua conexão.", "error");
+            } finally {
+                // Esconder tela de carregamento inicial
+                if (elements.initialLoading) {
+                    elements.initialLoading.style.display = 'none';
+                }
             }
         }
         
@@ -543,7 +509,7 @@
                 console.error("Erro ao buscar dados da carteira:", error);
                 showMessage("Erro ao carregar transações. Verifique sua conexão.", "error");
                 
-                // Manter os dados atuais em case de erro
+                // Manter os dados atuais em caso de erro
                 updateUI();
             }
         }
